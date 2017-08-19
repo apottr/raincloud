@@ -1,4 +1,4 @@
-from flask import Flask,request,Response
+from flask import Flask,request,Response,render_template
 from crontab import CronTab
 import couchdb,os,time
 
@@ -44,7 +44,15 @@ def create_job(job):
 
 @app.route('/')
 def index_route():
-    pass
+    lst = []
+    for config in db.view('_all_docs',include_docs=True):
+        print(config)
+        lst.append({
+                'id': config.id,
+                'url': config.doc['request']['url'],
+                'last': config.doc['last']
+            })
+    return render_template('index.html',configs=lst)
 
 @app.route('/job/<ident>')
 def inspect_route(ident):
@@ -57,3 +65,6 @@ def create_job_route():
 @app.route('/delete', methods=['GET','POST'])
 def delete_job_route():
     pass
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0")

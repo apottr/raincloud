@@ -13,9 +13,9 @@ def create_request(configuration):
     
 def save_response(id,response):
     try:
-        db = couch[id]
+        db = couch['store_{}'.format(id)]
     except:
-        db = couch.create(id)
+        db = couch.create('store_{}'.format(id))
 
     ident = '{}_{}'.format(time.gmtime(),uuid.uuid4())
     try:
@@ -23,7 +23,7 @@ def save_response(id,response):
                 "type": response.headers['Content-Type'],
                 "contents": binascii.b2a_base64(response.content)
             }
-        return True
+        return ident
     except:
         return False
     
@@ -32,7 +32,9 @@ if __name__ == "__main__":
     identifier = sys.argv[1]
     req = create_request(couch['configurations'][identifier])
     res = req.send()
-    if save_response(identifier,res):
+    ident = save_response(identifier,res)
+    if ident:
+        couch['configurations'][identifier]['last'] = ident
         print("[{}] Successfully made request {}".format(time.gmtime(),identifier))
     else:
         print("[{}] Failed to make request {}".format(time.gmtime(),identifier))

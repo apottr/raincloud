@@ -1,0 +1,24 @@
+{% extends "base.tpl" %}
+{% block content %}
+<table class="ui celled table">
+  <thead>
+    <th>UUID</tH>
+    <th>URL</th>
+    <th>Last Execution</th>
+  </thead>
+  <tbody>
+    {% for cfg in configs %}
+    <tr>
+      <td>{{ cfg.id }}</td>
+      <td>{{ cfg.url }}</td>
+      <td>{{ cfg.last }}</td>
+    </tr>
+    {% endfor %}
+    <tr>
+      <td colspan="3" class="center aligned">
+        Add New
+        <i class="icon plus"></i>
+    </tr>
+  </tbody>
+</table>
+{% endblock %}
