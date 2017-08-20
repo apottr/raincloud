@@ -1,0 +1,46 @@
+{% extends "base.tpl" %}
+
+{% block content %}
+<form class="ui form" method="POST" action="/create">
+  <div class="field">
+    <label>Type</label>
+    <div class="ui selection dropdown">
+      <input type="hidden" name="config.type" value="http">
+      <i class="dropdown icon"></i>
+      <div class="default text">Type</div>
+      <div class="menu">
+        <div class="item" data-value="http">HTTP</div>
+      </div>
+    </div>
+  </div>
+  <div class="field">
+    <label>URL</label>
+    <input name="url">
+  </div>
+  <div class="field">
+    <label>Headers</label>
+    <textarea name="headers" rows="5"></textarea>
+  </div>
+  <div class="field">
+    <label>Payload</label>
+    <textarea name="payload" row="5"></textarea>
+    <div class="ui selection dropdown">
+      <input type="hidden" name="payload.type" value="plain">
+      <i class="dropdown icon"></i>
+      <div class="default text">Type</div>
+      <div class="menu">
+        <div class="item" data-value="plain">Plaintext</div>
+        <div class="item" data-value="json">JSON</div>
+      </div>
+    </div>
+  </div>
+  <div class="field">
+    <label>Schedule</label>
+    <input name="schedule">
+  </div>
+  <button class="ui button" type="submit">Submit</button>
+  <script>
+    $('.ui.dropdown').dropdown();
+  </script>
+</form>
+{% endblock %}

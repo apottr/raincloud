@@ -1,4 +1,4 @@
-from flask import Flask,request,Response,render_template
+from flask import Flask,request,Response,render_template,redirect
 from crontab import CronTab
 import couchdb,os,time
 
@@ -19,7 +19,7 @@ if os.environ['ENV'] == 'dev':
     log = ">> {}activity.log 2>&1".format(path)
 elif os.environ['ENV'] == 'prod':
     path = "/usr/"
-    log = ">> {}src/activity.log 2>&1".format(path)
+    log = ">> /usr/src/activity.log 2>&1"
 
 def gen_job_cmd(conf_id):
     typ = db[conf_id]['job_type']
@@ -56,11 +56,18 @@ def index_route():
 
 @app.route('/job/<ident>')
 def inspect_route(ident):
-    pass
+    try:
+        return db[ident]
+    except:
+        return "Not found"
 
 @app.route('/create', methods=['GET','POST'])
 def create_job_route():
-    pass
+    if request.method == 'GET':
+        return render_template('add_new.html')
+    elif request.method == 'POST':
+        print(request.form)
+        return redirect('/')
 
 @app.route('/delete', methods=['GET','POST'])
 def delete_job_route():
