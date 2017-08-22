@@ -1,6 +1,19 @@
 {% extends "base.tpl" %}
 
 {% block content %}
+{% if error is defined %}
+  <div class="ui error message">
+    <div class="header">You have a problem with your configuration.</div>
+    <p>
+    {% if error is equalto('invalid_conf') %}
+      You might not have filled out one of the fields.
+    {% endif %}
+    {% if error is equalto('invalid_job') %}
+      You might have a problem with how your schedule is written.
+    {% endif %}
+    </p>
+  </div>
+{% endif %}
 <form class="ui form" method="POST" action="/create">
   <div class="field">
     <label>Type</label>
@@ -10,6 +23,17 @@
       <div class="default text">Type</div>
       <div class="menu">
         <div class="item" data-value="http">HTTP</div>
+      </div>
+    </div>
+  </div>
+  <div class="field">
+    <div class="ui selection dropdown">
+      <input type="hidden" name="request.type" value="GET">
+      <i class="dropdown icon"></i>
+      <div class="default text">Method</div>
+      <div class="menu">
+        <div class="item" data-value="GET">GET</div>
+        <div class="item" data-value="POST">POST</div>
       </div>
     </div>
   </div>

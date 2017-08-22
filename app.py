@@ -9,10 +9,10 @@ couch = couchdb.Server(CHDB)
 try:
     db = couch['configurations']
 except Exception as e:
-    print("[{}] Configurations database does not exist, creating".format(time.gmtime()))
+    print("[{}] Configurations database does not exist, creating".format(time.mktime(time.gmtime())))
     couch.create('configurations')
     db = couch['configurations']
-    print("[{}] Created configurations database".format(time.gmtime()))
+    print("[{}] Created configurations database".format(time.mktime(time.gmtime())))
 
 if os.environ['ENV'] == 'dev':
     path = "/home/apottr/Programming/Python/raincloud-v2/"
@@ -23,7 +23,7 @@ elif os.environ['ENV'] == 'prod':
 
 def gen_job_cmd(conf_id):
     typ = db[conf_id]['job_type']
-    j = "{p}bin/python {p}src/jobs/{t}.py {c} {s} {e}".format(p=path,c=conf_id,s=CHDB,e=log,t=typ)
+    j = "{p}bin/python {p}jobs/{t}mod.py {c} {s} {e}".format(p=path,c=conf_id,s=CHDB,e=log,t=typ)
     return j
 
 
@@ -36,11 +36,46 @@ def create_job(job):
     doc = db.save(job)
     jb = add_job(doc[0],job['schedule'])
     if jb.is_valid():
+        cron.write()
         return doc[0]
     else:
         db.delete(db[doc[0]])
         cron.remove(jb)
         return False
+
+def headers_str_to_obj(headers):
+    out = {}
+    h = [item.split(':') for item in headers.split('\n')]
+    for line in h:
+        out[line[0]] = line[1]
+    return out
+
+def form_to_conf(form):
+    out = {}
+    count = 0
+    if form['schedule'] != '' and form['url'] != '':
+        pass
+    elif form['request.type'] != 'POST' and form['payload'] != '':
+        pass
+    else:
+        return False
+
+    out['request'] = {}
+    out['request']['url'] = form['url']
+    if form['headers'] != '':
+        out['request']['headers'] = headers_str_to_obj(form['headers'])
+    else:
+        out['request']['headers'] = None
+    if form['payload.type'] == 'json':
+        out['request']['payload'] = json.loads(form['payload'])
+    else:
+        out['request']['payload'] = form['payload']
+    out['request']['type'] = form['request.type']
+    out['schedule'] = form['schedule']
+    out['job_type'] = form['config.type']
+    out['last'] = None
+
+    return out
 
 @app.route('/')
 def index_route():
@@ -56,22 +91,28 @@ def index_route():
 
 @app.route('/job/<ident>')
 def inspect_route(ident):
-    try:
-        return db[ident]
-    except:
-        return "Not found"
+    cfg = db[ident]
+    last = couch['store_'+ident][cfg['last']]
+    return render_template('job_info.html',config=cfg,last=last)
 
 @app.route('/create', methods=['GET','POST'])
 def create_job_route():
-    if request.method == 'GET':
-        return render_template('add_new.html')
-    elif request.method == 'POST':
+    try:
+        error = ''
+        if request.method == 'GET':
+            return render_template('add_new.html')
+        elif request.method == 'POST':
+            conf = form_to_conf(request.form)
+            jb = create_job(conf)
+            return render_template('add_new.html',error=error)
+    except Exception as e:
+        print(e)
         print(request.form)
         return redirect('/')
 
-@app.route('/delete', methods=['GET','POST'])
+@app.route('/delete', methods=['POST'])
 def delete_job_route():
-    pass
+    
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0")
+    app.run(host="0.0.0.0", debug=True)
