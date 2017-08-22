@@ -36,7 +36,10 @@ if __name__ == "__main__":
     res = s.send(req)
     ident = save_response(identifier,res)
     if ident:
-        couch['configurations'][identifier]['last'] = ident
+        doc = couch['configurations'][identifier]
+        doc['last'] = ident
+        couch['configurations'].save(doc)
+
         print("[{}] Successfully made request {}".format(time.mktime(time.gmtime()),identifier))
     else:
         print("[{}] Failed to make request {}".format(time.mktime(time.gmtime()),identifier))

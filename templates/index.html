@@ -8,10 +8,11 @@
   </thead>
   <tbody>
     {% for cfg in configs %}
+    {% set last_ts,_ = cfg.last.split('_') %}
     <tr>
-      <td>{{ cfg.id }}</td>
+      <td><a href="/details/{{ cfg.id }}">{{ cfg.id }}</a></td>
       <td>{{ cfg.url }}</td>
-      <td>{{ cfg.last }}</td>
+      <td>{{ last_ts }}</td>
     </tr>
     {% endfor %}
     <tr>

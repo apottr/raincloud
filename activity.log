@@ -1,1 +1,37 @@
 [1503376561.0] Successfully made request b46a94199705f51a23507fd3be002f92
+[1503445982.0] Successfully made request b46a94199705f51a23507fd3be0030ea
+[1503446042.0] Successfully made request b46a94199705f51a23507fd3be0030ea
+Traceback (most recent call last):
+  File "/home/apottr/Programming/Python/raincloud-v2/jobs/httpmod.py", line 40, in <module>
+    couch['configurations'].save(doc)
+  File "/home/apottr/Programming/Python/raincloud-v2/lib/python3.5/site-packages/couchdb/client.py", line 506, in save
+    if '_id' in doc:
+TypeError: argument of type 'NoneType' is not iterable
+[1503446342.0] Successfully made request b46a94199705f51a23507fd3be0034e8
+[1503446402.0] Successfully made request b46a94199705f51a23507fd3be0034e8
+[1503446461.0] Successfully made request b46a94199705f51a23507fd3be0034e8
+[1503446523.0] Successfully made request b46a94199705f51a23507fd3be0034e8
+[1503446582.0] Successfully made request b46a94199705f51a23507fd3be0034e8
+[1503446642.0] Successfully made request b46a94199705f51a23507fd3be0034e8
+[1503446701.0] Successfully made request b46a94199705f51a23507fd3be0034e8
+[1503446762.0] Successfully made request b46a94199705f51a23507fd3be0034e8
+[1503446822.0] Successfully made request b46a94199705f51a23507fd3be0034e8
+[1503447002.0] Successfully made request b46a94199705f51a23507fd3be003aa9
+Traceback (most recent call last):
+  File "/home/apottr/Programming/Python/raincloud-v2/jobs/httpmod.py", line 35, in <module>
+    req = create_request(couch['configurations'][identifier])
+  File "/home/apottr/Programming/Python/raincloud-v2/lib/python3.5/site-packages/couchdb/client.py", line 416, in __getitem__
+    _, _, data = _doc_resource(self.resource, id).get_json()
+  File "/home/apottr/Programming/Python/raincloud-v2/lib/python3.5/site-packages/couchdb/http.py", line 562, in get_json
+    return self._request_json('GET', path, headers=headers, **params)
+  File "/home/apottr/Programming/Python/raincloud-v2/lib/python3.5/site-packages/couchdb/http.py", line 585, in _request_json
+    headers=headers, **params)
+  File "/home/apottr/Programming/Python/raincloud-v2/lib/python3.5/site-packages/couchdb/http.py", line 581, in _request
+    credentials=self.credentials)
+  File "/home/apottr/Programming/Python/raincloud-v2/lib/python3.5/site-packages/couchdb/http.py", line 415, in request
+    raise ResourceNotFound(error)
+couchdb.http.ResourceNotFound: ('not_found', 'deleted')
+[1503448382.0] Successfully made request b46a94199705f51a23507fd3be0040ec
+[1503448441.0] Successfully made request b46a94199705f51a23507fd3be0040ec
+[1503448562.0] Successfully made request b46a94199705f51a23507fd3be00429a
+[1503448622.0] Successfully made request b46a94199705f51a23507fd3be0047b5

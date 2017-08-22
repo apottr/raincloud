@@ -1,0 +1,60 @@
+{% extends "base.tpl" %}
+{% block content %}
+<table class="ui celled structured fixed table">
+  <thead>
+    <th colspan="2">Config</th>
+    <th>Latest</th>
+  </thead>
+  <tbody>
+    <tr>
+      <td>UUID</td>
+      <td class="collapsing"><pre>{{config.id}}</pre></td>
+      <td rowspan="5">
+        <pre style="word-break: break-all; white-space: pre-wrap;">
+        {{ last.contents }}
+        </pre>
+      </td>
+    </tr>
+    <tr>
+      <td>URL</td>
+      <td class="collapsing"><pre>{{config.request.url}}</pre></td>
+    </tr>
+    <tr>
+      <td>Schedule</td>
+      <td class="collapsing"><pre>{{config.schedule}}</pre></td>
+    </tr>
+    <tr>
+      <td>Headers</td>
+      <td class="collapsing">
+        <pre>
+          {{config.request.headers}}
+        </pre>
+      </td>
+    </tr>
+    <tr>
+      <td>Payload</td>
+      <td class="collapsing">
+        <pre>
+          {{config.request.payload}}
+        </pre>
+      </td>
+    </tr>
+    <tr>
+      <td class="selectable positive">
+        <a href="#">Edit</a>
+      </td>
+      <td class="selectable negative">
+        <form id="delete_job" method="POST" action="/delete">
+          <input type="hidden" name="id" value="{{ config.id }}">
+        </form>
+          <a href="#" onclick="del()">Delete</a>
+  </tbody>
+</table>
+<script>
+function del(){
+  if(window.confirm("Are you sure you want to delete this job?")){
+    document.querySelector('#delete_job').submit()
+  }
+}
+</script>
+{% endblock%}

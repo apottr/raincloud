@@ -82,17 +82,21 @@ def index_route():
     lst = []
     for config in db.view('_all_docs',include_docs=True):
         print(config)
+        last = config.doc['last'] if config.doc['last'] else '0_0'
         lst.append({
                 'id': config.id,
                 'url': config.doc['request']['url'],
-                'last': config.doc['last']
+                'last': last
             })
     return render_template('index.html',configs=lst)
 
-@app.route('/job/<ident>')
+@app.route('/details/<ident>')
 def inspect_route(ident):
     cfg = db[ident]
-    last = couch['store_'+ident][cfg['last']]
+    if not cfg['last']:
+        last = {'contents': 'None'}
+    else:
+        last = couch['store_'+ident][cfg['last']]
     return render_template('job_info.html',config=cfg,last=last)
 
 @app.route('/create', methods=['GET','POST'])
@@ -104,7 +108,7 @@ def create_job_route():
         elif request.method == 'POST':
             conf = form_to_conf(request.form)
             jb = create_job(conf)
-            return render_template('add_new.html',error=error)
+            return redirect('/')
     except Exception as e:
         print(e)
         print(request.form)
@@ -112,7 +116,12 @@ def create_job_route():
 
 @app.route('/delete', methods=['POST'])
 def delete_job_route():
-    
+   ident = request.form['id']
+   cron.remove_all(command=gen_job_cmd(ident))
+   cron.write()
+   db.delete(db[ident])
+   del couch['store_{}'.format(ident)]
+   return redirect('/')
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", debug=True)
