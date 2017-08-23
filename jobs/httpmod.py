@@ -4,12 +4,13 @@ couch = couchdb.Server(sys.argv[2])
 
 
 def create_request(configuration):
-    req = requests.Request(
-            configuration['request']['type'],
-            configuration['request']['url'],
-            data=configuration['request']['payload'],
-            headers=configuration['request']['headers'])
-    return req.prepare()
+        req = requests.Request(
+                configuration['request']['type'],
+                configuration['request']['url'],
+                data=configuration['request']['payload'],
+                params=configuration['request']['params'],
+                headers=configuration['request']['headers'])
+        return req.prepare()
     
 def save_response(id,response):
     try:

@@ -1,0 +1,19 @@
+version: '2'
+services:
+  raincloud:
+    build: .
+    links:
+      - couch:couchdb_raincloud
+    environment:
+      - COUCHDB=http://couchdb_raincloud:5984/
+      - ENV=prod
+    volumes:
+      - .:/usr/local/src/
+    ports:
+      - "8080:5000"
+  couch:
+    image: "couchdb:latest"
+    volumes: 
+      - /home/Datasets/raincloud_couchdb:/usr/local/var/lib/couchdb
+    ports:
+      - "5984:5984"

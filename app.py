@@ -1,6 +1,6 @@
 from flask import Flask,request,Response,render_template,redirect
 from crontab import CronTab
-import couchdb,os,time
+import couchdb,os,time,json
 
 app = Flask(__name__)
 cron = CronTab(user=True)
@@ -16,14 +16,16 @@ except Exception as e:
 
 if os.environ['ENV'] == 'dev':
     path = "/home/apottr/Programming/Python/raincloud-v2/"
+    pp = "/home/apottr/Programming/Python/raincloud-v2/bin/"
     log = ">> {}activity.log 2>&1".format(path)
 elif os.environ['ENV'] == 'prod':
-    path = "/usr/"
-    log = ">> /usr/src/activity.log 2>&1"
+    path = "/usr/local/src/"
+    pp = "/usr/local/bin/"
+    log = ">> /usr/local/src/activity.log 2>&1"
 
 def gen_job_cmd(conf_id):
     typ = db[conf_id]['job_type']
-    j = "{p}bin/python {p}jobs/{t}mod.py {c} {s} {e}".format(p=path,c=conf_id,s=CHDB,e=log,t=typ)
+    j = "{pp}python {p}jobs/{t}mod.py {c} {s} {e}".format(pp=pp,p=path,c=conf_id,s=CHDB,e=log,t=typ)
     return j
 
 
@@ -63,13 +65,18 @@ def form_to_conf(form):
     out['request'] = {}
     out['request']['url'] = form['url']
     if form['headers'] != '':
-        out['request']['headers'] = headers_str_to_obj(form['headers'])
+        out['request']['headers'] = json.loads(form['headers'])
     else:
         out['request']['headers'] = None
     if form['payload.type'] == 'json':
         out['request']['payload'] = json.loads(form['payload'])
     else:
         out['request']['payload'] = form['payload']
+    if form['url.params'] == '':
+        out['request']['params'] = None
+    else:
+        out['request']['params'] = json.loads(form['url.params'])
+
     out['request']['type'] = form['request.type']
     out['schedule'] = form['schedule']
     out['job_type'] = form['config.type']

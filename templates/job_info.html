@@ -1,5 +1,11 @@
 {% extends "base.tpl" %}
 {% block content %}
+<style>
+pre{
+  word-break: break-all;
+  white-space: pre-wrap;
+}
+</style>
 <table class="ui celled structured fixed table">
   <thead>
     <th colspan="2">Config</th>
@@ -10,7 +16,7 @@
       <td>UUID</td>
       <td class="collapsing"><pre>{{config.id}}</pre></td>
       <td rowspan="5">
-        <pre style="word-break: break-all; white-space: pre-wrap;">
+        <pre style="height: 300px; overflow-y: scroll;">
         {{ last.contents }}
         </pre>
       </td>
